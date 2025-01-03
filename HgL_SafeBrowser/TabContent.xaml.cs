@@ -81,24 +81,14 @@ namespace HgL_SafeBrowser
             Browser.CoreWebView2.NavigationCompleted += Browser_NavigationCompleted;
             Browser.Source = new Uri(Url);
             Browser.NavigationCompleted += Browser_NavigationCompleted;
-        }
 
-        private void Browser_NavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs e)
-        {
-            LoadingProgress.Visibility = Visibility.Visible;
-        }
-
-        private void Browser_NavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
-        {
-            LoadingProgress.Visibility = Visibility.Collapsed;
-        }
-
-        private void cmbSearchEngine_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (cmbSearchEngine.SelectedItem is SearchEngine selectedEngine)
+            var coreWebView2 = Browser.CoreWebView2;
+            coreWebView2.NewWindowRequested += (s, args) =>
             {
-                imgSelectedEngine.Source = new BitmapImage(new Uri(selectedEngine.ImageUrl));
-            }
+                args.Handled = true; // Ngăn không cho mở cửa sổ mới
+                coreWebView2.Navigate(args.Uri); 
+            };
+            Browser.Source = new Uri(Url);
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -120,8 +110,41 @@ namespace HgL_SafeBrowser
 
             if (cmbSearchEngine.SelectedItem is SearchEngine selectedEngine)
             {
-                string searchUrl = string.Format(selectedEngine.UrlTemplate, Uri.EscapeDataString(query));
-                Browser.Source = new Uri(searchUrl); // Thay đổi URL của WebView2
+                if (query.StartsWith("localhost"))
+                {
+                    try
+                    {
+                        Browser.Source = new Uri(query);
+                    }
+                    catch (UriFormatException ex)
+                    {
+                        MessageBox.Show("URL không hợp lệ. Vui lòng nhập lại!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                else
+                {
+                    string searchUrl = string.Format(selectedEngine.UrlTemplate, Uri.EscapeDataString(query));
+                    Browser.Source = new Uri(searchUrl);
+                }
+            }
+        }
+
+
+        private void Browser_NavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs e)
+        {
+            LoadingProgress.Visibility = Visibility.Visible;
+        }
+
+        private void Browser_NavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            LoadingProgress.Visibility = Visibility.Collapsed;
+        }
+
+        private void cmbSearchEngine_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbSearchEngine.SelectedItem is SearchEngine selectedEngine)
+            {
+                imgSelectedEngine.Source = new BitmapImage(new Uri(selectedEngine.ImageUrl));
             }
         }
 
