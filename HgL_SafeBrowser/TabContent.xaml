@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="HgL_SafeBrowser.TabContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+             xmlns:local="clr-namespace:HgL_SafeBrowser"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="90"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="2.5*"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+
+            </Grid.RowDefinitions>
+
+            <!--Left-->
+            <Grid>
+                <StackPanel Orientation="Horizontal"
+            HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <!-- Back Button -->
+                    <Button Height="25" Width="25" Padding="0" Margin="15, 0, 5, 0" x:Name="btnBack"
+                BorderBrush="Transparent" BorderThickness="0" Background="Transparent"
+                Click="btnBack_Click" IsEnabled="{Binding CanGoBack, ElementName=Browser}">
+                        <Viewbox Width="20" Height="20">
+                            <Image Source="Assets/Icons/icons8-left-64.png"/>
+                        </Viewbox>
+                    </Button>
+
+                    <!-- Forward Button -->
+                    <Button Height="25" Width="25" Padding="0" Margin="0, 0, 5, 0" x:Name="btnForward"
+                    BorderBrush="Transparent" BorderThickness="0" Background="Transparent"
+                    Click="btnForward_Click" IsEnabled="{Binding CanGoForward, ElementName=Browser}">
+                        <Viewbox Width="20" Height="20">
+                            <Image Source="Assets/Icons/icons8-right-64.png"/>
+                        </Viewbox>
+                    </Button>
+
+                    <!-- Refresh Button -->
+                    <Button Height="25" Width="25" Padding="0" Margin="0, 0, 5, 0"
+                    BorderBrush="Transparent" BorderThickness="0" Background="Transparent"
+                    Click="btnRefresh_Click">
+                        <Viewbox Width="20" Height="20">
+                            <Image Source="Assets/Icons/icons8-refresh-64.png"/>
+                        </Viewbox>
+                    </Button>
+                </StackPanel>
+
+
+                <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <ComboBox x:Name="cmbSearchEngine" Width="150" Height="40" SelectedIndex="0" SelectionChanged="cmbSearchEngine_SelectionChanged">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding ImageUrl}" Width="20" Height="20" Margin="5" />
+                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="5,0,0,0" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+
+                </StackPanel>
+            </Grid>
+
+            <!--Center-->
+
+
+            <TextBox Grid.Column="1" Margin="7,25" Padding="40 6 25 0" Background="#FFF0F0F0" x:Name="txtSearch" 
+             KeyDown="txtSearch_KeyDown" FontSize="18px">
+
+            </TextBox>
+
+            <Viewbox Width="20" Height="20" Grid.Column="1"
+    HorizontalAlignment="Left" Margin="10 0 0 0">
+                <Image x:Name="imgSelectedEngine" />
+            </Viewbox>
+
+            <Rectangle Margin="5,0,0,0" Grid.Column="1" Height="31" HorizontalAlignment="Left" VerticalAlignment="Center"
+               Width="30" StrokeThickness="1"/>
+
+            <!--Right-->
+            <Grid Grid.Column="2">
+                <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Left" VerticalAlignment="Center">
+
+                    <ProgressBar x:Name="LoadingProgress" Grid.Row="1" VerticalAlignment="Top" Height="12" IsIndeterminate="True"
+                            Visibility="Collapsed" Background="Transparent" Foreground="Lime"
+                            Width="40" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button Height="40" Width="40" Padding="0" Margin="0, 0, 5, 0" x:Name="btnExit"
+                    BorderBrush="Transparent" BorderThickness="0" Background="Transparent" Click="btnExit_Click">
+                        <Button.Content>
+                            <Viewbox Width="35" Height="35">
+                                <Image Source="Assets/Icons/shutdown.png"/>
+                            </Viewbox>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <wv2:WebView2 Grid.Row="1" x:Name="Browser"
+                      Source="https://www.google.com" 
+                      Initialized="InitializeBrowser"/>
+    </Grid>
+</UserControl>
